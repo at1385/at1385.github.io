@@ -4,6 +4,222 @@
   cursor: grab;
 }
 
+[data-simplebar] {
+  position: relative;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
+}
+
+.simplebar-wrapper {
+  overflow: hidden;
+  width: inherit;
+  height: inherit;
+  max-width: inherit;
+  max-height: inherit;
+}
+
+.simplebar-mask {
+  direction: inherit;
+  position: absolute;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: auto !important;
+  height: auto !important;
+  z-index: 0;
+}
+
+.simplebar-offset {
+  direction: inherit !important;
+  box-sizing: inherit !important;
+  resize: none !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 0;
+  margin: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.simplebar-content-wrapper {
+  direction: inherit;
+  box-sizing: border-box !important;
+  position: relative;
+  display: block;
+  height: 100%;
+  /* Required for horizontal native scrollbar to not appear if parent is taller than natural height */
+  width: auto;
+  max-width: 100%;
+  /* Not required for horizontal scroll to trigger */
+  max-height: 100%;
+  /* Needed for vertical scroll to trigger */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.simplebar-content-wrapper::-webkit-scrollbar,
+.simplebar-hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.simplebar-content:before,
+.simplebar-content:after {
+  content: ' ';
+  display: table;
+}
+
+.simplebar-placeholder {
+  max-height: 100%;
+  max-width: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+.simplebar-height-auto-observer-wrapper {
+  box-sizing: inherit !important;
+  height: 100%;
+  width: 100%;
+  max-width: 1px;
+  position: relative;
+  float: left;
+  max-height: 1px;
+  overflow: hidden;
+  z-index: -1;
+  padding: 0;
+  margin: 0;
+  pointer-events: none;
+  flex-grow: inherit;
+  flex-shrink: 0;
+  flex-basis: 0;
+}
+
+.simplebar-height-auto-observer {
+  box-sizing: inherit;
+  display: block;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1000%;
+  width: 1000%;
+  min-height: 1px;
+  min-width: 1px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.simplebar-track {
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+[data-simplebar].simplebar-dragging .simplebar-content {
+  pointer-events: none;
+  -moz-user-select: none;
+       user-select: none;
+  -webkit-user-select: none;
+}
+
+[data-simplebar].simplebar-dragging .simplebar-track {
+  pointer-events: all;
+}
+
+.simplebar-scrollbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  min-height: 10px;
+}
+
+.simplebar-scrollbar:before {
+  position: absolute;
+  content: '';
+  background: black;
+  border-radius: 7px;
+  left: 2px;
+  right: 2px;
+  opacity: 0;
+  transition: opacity 0.2s linear;
+}
+
+.simplebar-scrollbar.simplebar-visible:before {
+  /* When hovered, remove all transitions from drag handle */
+  opacity: 0.5;
+  transition: opacity 0s linear;
+}
+
+.simplebar-track.simplebar-vertical {
+  top: 0;
+  width: 11px;
+}
+
+.simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
+  top: 2px;
+  bottom: 2px;
+}
+
+.simplebar-track.simplebar-horizontal {
+  left: 0;
+  height: 11px;
+}
+
+.simplebar-track.simplebar-horizontal .simplebar-scrollbar:before {
+  height: 100%;
+  left: 2px;
+  right: 2px;
+}
+
+.simplebar-track.simplebar-horizontal .simplebar-scrollbar {
+  right: auto;
+  left: 0;
+  top: 2px;
+  height: 7px;
+  min-height: 0;
+  min-width: 10px;
+  width: auto;
+}
+
+/* Rtl support */
+[data-simplebar-direction='rtl'] .simplebar-track.simplebar-vertical {
+  right: auto;
+  left: 0;
+}
+
+.hs-dummy-scrollbar-size {
+  direction: rtl;
+  position: fixed;
+  opacity: 0;
+  visibility: hidden;
+  height: 500px;
+  width: 500px;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+.simplebar-hide-scrollbar {
+  position: fixed;
+  left: 0;
+  visibility: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 @font-face {
   font-family: "Raleway";
   font-style: normal;
@@ -525,6 +741,7 @@ a {
   min-width: 252px;
   max-width: 468px;
   padding: 22px 48px;
+  font-family: inherit;
   font-size: 17px;
   font-weight: 800;
   line-height: 20px;
@@ -573,7 +790,7 @@ a {
 }
 
 @media (max-width: 767px) {
-  .button--small, .button--hybrid {
+  .button--hybrid {
     min-width: 185px;
     max-width: 328px;
     padding: 15px 28px;
@@ -654,8 +871,9 @@ a {
     margin-left: 0;
   }
   .block-header__redirect-link {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    margin-right: auto;
     margin-bottom: 29px;
   }
   .block-header__redirect-link svg {
@@ -711,6 +929,7 @@ a {
   width: 50px;
   height: 40px;
   background-image: linear-gradient(270deg, #1a1919 0%, rgba(26, 25, 25, 0) 100%);
+  pointer-events: none;
 }
 
 .catalog__filters-limiter {
@@ -1077,6 +1296,15 @@ a {
 .specific-quest__column {
   max-width: 57%;
   margin-left: auto;
+  padding-top: 53px;
+}
+
+.specific-quest__column--high {
+  padding-top: 94px;
+}
+
+.specific-quest__column--low {
+  padding-top: 0;
 }
 
 .specific-quest__column--wide {
@@ -1097,7 +1325,6 @@ a {
 
 .specific-quest__block-header {
   margin-bottom: 21px;
-  word-wrap: break-word;
 }
 
 .specific-quest__quest-metadata {
@@ -1113,6 +1340,7 @@ a {
   .specific-quest__column {
     max-width: 61%;
     min-width: 447px;
+    padding-top: 0;
   }
   .specific-quest__column p {
     width: 90%;
@@ -1123,6 +1351,7 @@ a {
 @media (max-width: 767px) {
   .specific-quest {
     padding: 0 16px;
+    padding-bottom: 50px;
   }
   .specific-quest__block-header {
     min-height: 381px;
@@ -1284,7 +1513,7 @@ a {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  width: 83%;
+  width: 92%;
 }
 
 .order-form__time-field {
@@ -1330,7 +1559,6 @@ a {
 }
 
 .order-form__time-field label {
-  display: inline-block;
   width: 110px;
   height: 38px;
   margin-bottom: 3px;
@@ -1467,7 +1695,6 @@ a {
 
 .page-main--quest {
   padding: 0;
-  padding-top: 94px;
   padding-bottom: 35px;
 }
 
@@ -1575,7 +1802,7 @@ a {
 }
 
 .page-main__specific-quest {
-  margin-top: 50px;
+  margin-top: auto;
   margin-bottom: auto;
 }
 
@@ -1584,8 +1811,15 @@ a {
 }
 
 @media (max-width: 1023px) {
+  .js .page-main {
+    padding: 0;
+  }
+  .js .page-main--index {
+    padding-top: 106px;
+  }
   .page-main {
     padding: 0;
+    padding-top: 40px;
   }
   .page-main--index {
     padding-top: 106px;
@@ -1610,6 +1844,7 @@ a {
     padding-bottom: 40px;
   }
   .page-main__wrapper--index {
+    margin-top: 186px;
     margin-bottom: 65px;
     padding-right: 95px;
   }
@@ -1625,6 +1860,9 @@ a {
 }
 
 @media (max-width: 767px) {
+  .js .page-main--index {
+    padding-top: 86px;
+  }
   .page-main {
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -1638,6 +1876,7 @@ a {
   }
   .page-main--index {
     padding-top: 86px;
+    background-color: #22140e;
     background-image: url("../img/bg-index-mobile.jpg");
   }
 }
@@ -1661,6 +1900,7 @@ a {
     width: 100%;
     height: 64px;
     background-image: linear-gradient(rgba(99, 60, 15, 0) 23.22%, rgba(99, 60, 15, 0) 37.46%, #24150e 89.63%, #1a140d 106.79%);
+    pointer-events: none;
   }
   .page-main--maniac {
     background-image: url("../img/bg-quest-maniac-mobile.jpg");
@@ -1741,11 +1981,11 @@ a {
     line-height: 40px;
   }
   .page-main__wrapper--index {
+    margin-top: 323px;
     padding: 0 16px;
   }
   .page-main__wrapper--index h1 {
     width: 328px;
-    margin-top: 315px;
     margin-right: auto;
     margin-left: auto;
     text-align: center;
@@ -1777,6 +2017,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   width: 105px;
+  pointer-events: auto;
 }
 
 .socials li {
@@ -1870,6 +2111,7 @@ a {
   vertical-align: top;
   word-wrap: break-word;
   border-bottom: 1px dashed #e5e5e5;
+  pointer-events: auto;
 }
 
 .question-link::before {
@@ -1915,6 +2157,7 @@ a {
   padding-top: 24px;
   padding-bottom: 19px;
   transform: translateX(-50%);
+  pointer-events: none;
 }
 
 @media (max-width: 1023px) {
@@ -2017,9 +2260,10 @@ a {
 .modal__close-button {
   position: absolute;
   top: 41px;
-  right: 37px;
+  right: 32px;
   width: 14px;
   height: 14px;
+  padding: 0;
   background-color: transparent;
   border: none;
   outline: none;
@@ -2301,6 +2545,7 @@ a {
   font-size: 14px;
   line-height: 20px;
   text-align: left;
+  letter-spacing: 0;
 }
 
 .question-form__field--checkbox label::before {
@@ -2375,6 +2620,12 @@ a {
 }
 
 @media (max-width: 767px) {
+  .question-form__field label {
+    top: 49px;
+  }
+  .question-form__field--checkbox label {
+    top: 0;
+  }
   .question-form__field--modal-page input,
   .question-form__field--modal-page textarea {
     max-width: 416px;

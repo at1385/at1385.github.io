@@ -41,26 +41,15 @@
       return document.body.offsetHeight > window.innerHeight;
     }
 
-    const getBodyScrollTop = () => {
-      return (
-        self.pageYOffset ||
-        (document.documentElement && document.documentElement.ScrollTop) ||
-        (document.body && document.body.scrollTop)
-      );
-    };
-
     const openModal = () => {
       if (modal && overlay) {
         modal.classList.remove('modal--hidden');
         overlay.classList.remove('overlay--hidden');
 
-        body.dataset.scrollY = `${getBodyScrollTop()}`;
-
         if (!existVerticalScroll()) {
           body.classList.add('body-lock');
         } else if (!body.classList.contains('body-lock')) {
           body.classList.add('body-lock--scroll');
-          body.style.top = `-${body.dataset.scrollY}px`;
         }
 
         document.addEventListener('keydown', onEscPress);
@@ -76,7 +65,6 @@
         body.classList.remove('body-lock');
       } else if (!body.classList.contains('body-lock')) {
         body.classList.remove('body-lock--scroll');
-        window.scrollTo(0, +body.dataset.scrollY);
       }
 
       document.removeEventListener('keydown', onEscPress);
@@ -192,8 +180,8 @@
   }
 
   if (questionForm) {
-    const userData = questionForm.querySelectorAll('.question-form--userdata');
-    const userDataInputs = questionForm.querySelectorAll('.question-form--userdata input');
+    const userData = questionForm.querySelectorAll('.question-form__field--userdata');
+    const userDataInputs = questionForm.querySelectorAll('.question-form__field--userdata input');
     const userName = questionForm.querySelector('#question-form-username');
     const userEmail = questionForm.querySelector('#question-form-user-email');
     const userEmailError = questionForm.querySelector('.question-form__email-error');
@@ -251,70 +239,80 @@
 
     setSubmitCondition();
 
-    userData.forEach((item, index) => {
-      if (userDataInputs[index].value !== '' && userDataInputs[index].validity.valid) {
-        addClass('question-form__field--valid', item);
-      } else if (userDataInputs[index].value !== '' && !userDataInputs[index].validity.valid) {
-        addClass('question-form__field--invalid', item);
-
-        if (item.classList.contains('question-form__field--user-email')) {
-          userEmailError.classList.add('question-form__email-error--shown');
-        }
-      }
-
-      userDataInputs[index].addEventListener('keyup', () => {
-        if (userDataInputs[index].value === '' && item.classList.contains('question-form__field--valid')) {
-          removeClass('question-form__field--valid', item);
-        } else {
-          if (!item.classList.contains('question-form__field--user-email') && item.classList.contains('question-form__field--invalid')) {
-            removeClass('question-form__field--invalid', item);
-          }
+    if (userData) {
+      userData.forEach((item, index) => {
+        if (userDataInputs[index].value !== '' && userDataInputs[index].validity.valid) {
+          addClass('question-form__field--valid', item);
+        } else if (userDataInputs[index].value !== '' && !userDataInputs[index].validity.valid) {
+          addClass('question-form__field--invalid', item);
 
           if (item.classList.contains('question-form__field--user-email')) {
-            if (userDataInputs[index].validity.valid && userEmailError.classList.contains('question-form__email-error--shown')) {
-              userEmailError.classList.remove('question-form__email-error--shown');
+            userEmailError.classList.add('question-form__email-error--shown');
+          }
+        }
+
+        userDataInputs[index].addEventListener('keyup', () => {
+          if (userDataInputs[index].value === '' && item.classList.contains('question-form__field--valid')) {
+            removeClass('question-form__field--valid', item);
+          } else {
+            if (!item.classList.contains('question-form__field--user-email') && item.classList.contains('question-form__field--invalid')) {
               removeClass('question-form__field--invalid', item);
             }
 
-            if (!userDataInputs[index].validity.valid && userDataInputs[index].value !== '') {
-              removeClass('question-form__field--invalid', item);
-              userEmailError.classList.remove('question-form__email-error--shown');
+            if (item.classList.contains('question-form__field--user-email')) {
+              if (userDataInputs[index].validity.valid && userEmailError.classList.contains('question-form__email-error--shown')) {
+                userEmailError.classList.remove('question-form__email-error--shown');
+                removeClass('question-form__field--invalid', item);
+              }
+
+              if (!userDataInputs[index].validity.valid && userDataInputs[index].value !== '') {
+                removeClass('question-form__field--invalid', item);
+                userEmailError.classList.remove('question-form__email-error--shown');
+              }
             }
+
+            addClass('question-form__field--valid', item);
           }
 
-          addClass('question-form__field--valid', item);
-        }
+          if (isStorageSupport) {
+            localStorage.setItem('userName', userName.value);
+            localStorage.setItem('userEmail', userEmail.value);
+          }
 
+          setSubmitCondition();
+        });
+      });
+    }
+
+    if (userQuestion) {
+      userQuestion.addEventListener('keyup', () => {
         if (isStorageSupport) {
-          localStorage.setItem('userName', userName.value);
-          localStorage.setItem('userEmail', userEmail.value);
+          localStorage.setItem('userQuestion', userQuestion.value);
         }
+      });
+    }
 
+    if (userConsent) {
+      userConsent.addEventListener('change', () => {
         setSubmitCondition();
       });
-    });
+    }
 
-    userQuestion.addEventListener('keyup', () => {
-      if (isStorageSupport) {
-        localStorage.setItem('userQuestion', userQuestion.value);
-      }
-    });
+    if (submit) {
+      submit.addEventListener('click', () => {
+        if (userData) {
+          userData.forEach((item, index) => {
+            if (!userDataInputs[index].validity.valid) {
+              addClass('question-form__field--invalid', item);
+            }
 
-    userConsent.addEventListener('change', () => {
-      setSubmitCondition();
-    });
-
-    submit.addEventListener('click', () => {
-      userData.forEach((item, index) => {
-        if (!userDataInputs[index].validity.valid) {
-          addClass('question-form__field--invalid', item);
-        }
-
-        if (!userDataInputs[index].validity.valid && item.classList.contains('question-form__field--user-email')) {
-          userEmailError.classList.add('question-form__email-error--shown');
+            if (!userDataInputs[index].validity.valid && item.classList.contains('question-form__field--user-email')) {
+              userEmailError.classList.add('question-form__email-error--shown');
+            }
+          });
         }
       });
-    })
+    }
   }
 })();
 

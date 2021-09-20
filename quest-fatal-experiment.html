@@ -144,7 +144,7 @@
     <div class="overlay overlay--hidden"></div>
 
     <form class="modal modal--hidden modal--city-chooser city-chooser-form" id="city-chooser-form" action="https://echo.htmlacademy.ru/" method="POST">
-      <div class="modal__wrapper">
+      <div class="modal__wrapper" data-simplebar>
         <h2>Ваш город:</h2>
 
         <button class="modal__close-button" type="button">
@@ -189,7 +189,7 @@
     </form>
 
     <form class="modal modal--hidden modal--question question-form" id="question-form" action="https://echo.htmlacademy.ru/" method="POST">
-      <div class="modal__wrapper">
+      <div class="modal__wrapper" data-simplebar>
         <h2>Задайте вопрос</h2>
 
         <button class="modal__close-button" type="button">
@@ -200,14 +200,14 @@
           </svg>
         </button>
 
-        <div class="question-form__field question-form__field--username question-form--userdata">
-          <p>Чтобы мы смогли обращаться к вам, оставьте ваше имя</p>
+        <div class="question-form__field question-form__field--username question-form__field--userdata">
+          <p>Чтобы мы смогли обращаться к вам, оставьте&nbsp;ваше имя</p>
           <input id="question-form-username" type="text" name="question-form-username" placeholder="Имя" autocomplete="off" required>
           <label for="question-form-username">Имя</label>
         </div>
 
-        <div class="question-form__field question-form__field--user-email question-form--userdata">
-          <p>Чтобы вы получили ответ, оставьте ваш e-mail</p>
+        <div class="question-form__field question-form__field--user-email question-form__field--userdata">
+          <p>Чтобы вы получили ответ, оставьте ваш e&#8209;mail</p>
           <input id="question-form-user-email" type="email" name="question-form-user-email" placeholder="E-mail" autocomplete="off" required>
           <label for="question-form-user-email">E-mail</label>
 
